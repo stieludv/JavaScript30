@@ -58,7 +58,53 @@
   <audio data-key="76" src="sounds/tink.wav"></audio>
 
 <script>
+  function playAudio(audio) {
+    audio.currentTime = 0;
+    audio.play();
+  }
 
+  function removePlayingClass(key) {
+    key.classList.remove("playing");
+  }
+
+  function addPlayingClass(key) {
+    key.classList.add("playing");
+  }
+
+  function getKey(keyCode) {
+    return document.querySelector(`.key[data-key="${keyCode}"]`);
+  }
+
+  function getAudio(keyCode) {
+    return document.querySelector(`audio[data-key="${keyCode}"]`);
+  }
+
+  // Key event listener (for playing)
+  window.addEventListener('keydown', (e) => {
+    // Get the audio element for key pressed
+    const audio = getAudio(e.keyCode);
+    
+    // If there is no audio then stop
+    if (!audio) return;
+    
+    // Else, play the audio
+    playAudio(audio);
+
+    // And animate
+    addPlayingClass(getKey(e.keyCode));
+  })
+
+  // Transform event listener (for clearing "playing" class)
+  const keyNodelist = document.querySelectorAll(".key");
+  keyNodelist.forEach((key) => {
+    // When the key has ended its transition (transition + end = transitionend)
+    key.addEventListener("transitionend", (e) => {
+      // Transform probably has the longest transition/doesn't matter which one we pick
+      if (e.propertyName === "transform") {
+        removePlayingClass(key);
+      }
+    })
+  })
 </script>
 
 
